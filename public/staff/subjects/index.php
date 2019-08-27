@@ -26,9 +26,9 @@
         <th>Visible</th>
   	    <th>Name</th>
         <th>Pages</th>
-  	    <th>&nbsp;</th>
-  	    <th>&nbsp;</th>
-        <th>&nbsp;</th>
+  	    <th>&nbsp</th>
+  	    <th>&nbsp</th>
+        <th>&nbsp</th>
   	  </tr>
 
       <?php while($subject = mysqli_fetch_assoc($subject_set)) { ?>
