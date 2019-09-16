@@ -2,11 +2,17 @@
 
 require_once('../../../private/initialize.php');
 
-require_login(); 
+require_login();
 
+
+if(!isset($_GET['id'])) {
+  redirect_to(url_for('/staff/admins/index.php'));
+}
+$id = $_GET['id'];
 
 if(is_post_request()) {
-  $subject = [];
+  $admin = [];
+  $admin['id'] = $id;
   $admin['first_name'] = $_POST['first_name'] ?? '';
   $admin['last_name'] = $_POST['last_name'] ?? '';
   $admin['email'] = $_POST['email'] ?? '';
@@ -14,41 +20,32 @@ if(is_post_request()) {
   $admin['password'] = $_POST['password'] ?? '';
   $admin['confirm_password'] = $_POST['confirm_password'] ?? '';
 
-  $result = insert_admin($admin);
+  $result = update_admin($admin);
   if($result === true) {
-    $new_id = mysqli_insert_id($db);
-    $_SESSION['message'] = 'Admin created.';
-    redirect_to(url_for('/staff/admins/show.php?id=' . $new_id));
+    $_SESSION['message'] = 'Admin updated.';
+    redirect_to(url_for('/staff/admins/show.php?id=' . $id));
   } else {
     $errors = $result;
   }
-
 } else {
-  // display the blank form
-  $admin = [];
-  $admin["first_name"] = '';
-  $admin["last_name"] = '';
-  $admin["email"] = '';
-  $admin["username"] = '';
-  $admin['password'] = '';
-  $admin['confirm_password'] = '';
+  $admin = find_admin_by_id($id);
 }
 
 ?>
 
-<?php $page_title = 'Create Admin'; ?>
+<?php $page_title = 'Edit Admin'; ?>
 <?php include(SHARED_PATH . '/staff_header.php'); ?>
 
 <div id="content">
 
   <a class="back-link" href="<?php echo url_for('/staff/admins/index.php'); ?>">&laquo; Back to List</a>
 
-  <div class="admin new">
-    <h1>Create Admin</h1>
+  <div class="admin edit">
+    <h1>Edit Admin</h1>
 
     <?php echo display_errors($errors); ?>
 
-    <form action="<?php echo url_for('/staff/admins/new.php'); ?>" method="get">
+    <form action="<?php echo url_for('/staff/admins/edit.php?id=' . h(u($id))); ?>" method="post">
       <dl>
         <dt>First name</dt>
         <dd><input type="text" name="first_name" value="<?php echo h($admin['first_name']); ?>" /></dd>
@@ -65,7 +62,7 @@ if(is_post_request()) {
       </dl>
 
       <dl>
-        <dt>Email </dt>
+        <dt>Email</dt>
         <dd><input type="text" name="email" value="<?php echo h($admin['email']); ?>" /><br /></dd>
       </dl>
 
@@ -84,7 +81,7 @@ if(is_post_request()) {
       <br />
 
       <div id="operations">
-        <input type="submit" value="Create Admin" />
+        <input type="submit" value="Edit Admin" />
       </div>
     </form>
 

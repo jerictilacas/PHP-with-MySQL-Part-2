@@ -48,7 +48,7 @@ if(is_post_request()) {
 
     <?php echo display_errors($errors); ?>
 
-    <form action="<?php echo url_for('/staff/admins/new.php'); ?>" method="get">
+    <form action="<?php echo url_for('/staff/admins/new.php'); ?>" method="post">
       <dl>
         <dt>First name</dt>
         <dd><input type="text" name="first_name" value="<?php echo h($admin['first_name']); ?>" /></dd>

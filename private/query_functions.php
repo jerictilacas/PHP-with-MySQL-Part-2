@@ -443,6 +443,17 @@
     return $result;
   }
 
+  // Find all customers, ordered last_name, first_name
+  function find_all_customers() {
+    global $db;
+
+    $sql = "SELECT * FROM customers ";
+    $sql .= "ORDER BY last_name ASC, first_name ASC";
+    $result = mysqli_query($db, $sql);
+    confirm_result_set($result);
+    return $result;
+  }
+
   function find_admin_by_id($id) {
     global $db;
 
@@ -545,6 +556,30 @@
     $sql .= "'" . db_escape($db, $admin['username']) . "',";
     $sql .= "'" . db_escape($db, $hashed_password) . "'";
     $sql .= ")";
+    $result = mysqli_query($db, $sql);
+
+    // For INSERT statements, $result is true/false
+    if($result) {
+      return true;
+    } else {
+      // INSERT failed
+      echo mysqli_error($db);
+      db_disconnect($db);
+      exit;
+    }
+  }
+
+  function insert_customer($customer) {
+    global $db;
+
+    $sql = "INSERT INTO customers ";
+    $sql .= "(first_name, last_name, email) ";
+    $sql .= " VALUES (";
+    $sql .= "'" . db_escape($db, $customer['first_name']) . "',";
+    $sql .= "'" . db_escape($db, $customer['last_name']) . "',";
+    $sql .= "'" . db_escape($db, $customer['email']) . "'";
+    $sql .= ")";
+
     $result = mysqli_query($db, $sql);
 
     // For INSERT statements, $result is true/false
